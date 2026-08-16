@@ -1,0 +1,41 @@
+name: Weekly Scrape — Time Out + Urban List
+
+on:
+  schedule:
+    # Every Monday at 8pm UTC = Tuesday 7am Sydney time (AEST)
+    - cron: "0 20 * * 1"
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # Needed to commit index.html and events.db
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Run weekly scrape
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python main.py weekly
+
+      - name: Commit updated site
+        run: |
+          git config user.name  "Whats-on-Sydney Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add index.html events.db
+          git diff --staged --quiet || git commit -m "chore: weekly update [skip ci]"
+          git push
