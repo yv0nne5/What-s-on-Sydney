@@ -1,0 +1,8 @@
+# Web scraping
+playwright==1.44.0
+python-dateutil==2.9.0
+
+# AI filtering (Gemini free tier)
+google-generativeai==0.7.2
+
+# No Google Calendar API needed — "Add to calendar" uses a direct URL link
