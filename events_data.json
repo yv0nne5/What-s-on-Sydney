@@ -1,1 +1,110 @@
-[]
+[
+  {
+    "title": "NSW Great Walks",
+    "description": "",
+    "url": "https://www.nationalparks.nsw.gov.au/things-to-do/experiences/nsw-great-walks",
+    "source": "National Parks NSW",
+    "location": "",
+    "date_start": null,
+    "date_end": null,
+    "price_text": "Free",
+    "is_free": true,
+    "categories": [
+      "outdoor"
+    ],
+    "image_url": null,
+    "ai_category": "outdoor",
+    "ai_priority": 1,
+    "ai_location_region": "sydney"
+  },
+  {
+    "title": "Aboriginal culture tours in NSW national parks",
+    "description": "Discover the cultural significance of destinations across NSW on a guided tour with one of our Aboriginal Parks Eco Pass tour operators.",
+    "url": "https://www.nationalparks.nsw.gov.au/aboriginal-culture-tours",
+    "source": "National Parks NSW",
+    "location": "",
+    "date_start": null,
+    "date_end": null,
+    "price_text": "Free",
+    "is_free": true,
+    "categories": [
+      "outdoor"
+    ],
+    "image_url": null,
+    "ai_category": "outdoor",
+    "ai_priority": 1,
+    "ai_location_region": "sydney"
+  },
+  {
+    "title": "Kids and family activities",
+    "description": "There are plenty of family-friendly events and tours on offer during school holidays.",
+    "url": "https://www.nationalparks.nsw.gov.au/kids-and-family-tours",
+    "source": "National Parks NSW",
+    "location": "",
+    "date_start": null,
+    "date_end": null,
+    "price_text": "Free",
+    "is_free": true,
+    "categories": [
+      "outdoor"
+    ],
+    "image_url": null,
+    "ai_category": "outdoor",
+    "ai_priority": 1,
+    "ai_location_region": "sydney"
+  },
+  {
+    "title": "Wombeyan Caves",
+    "description": "Spectacular caves, tours, cabins and camping.",
+    "url": "https://www.nationalparks.nsw.gov.au/visit-a-park/parks/wombeyan-karst-conservation-reserve",
+    "source": "National Parks NSW",
+    "location": "",
+    "date_start": null,
+    "date_end": null,
+    "price_text": "Free",
+    "is_free": true,
+    "categories": [
+      "outdoor"
+    ],
+    "image_url": null,
+    "ai_category": "outdoor",
+    "ai_priority": 1,
+    "ai_location_region": "sydney"
+  },
+  {
+    "title": "Be safe in NSW national parks",
+    "description": "It's great to explore and experience NSW national parks. Naturally, we encourage you to see and do as much as possible. We also want you and your companions to stay safe.",
+    "url": "https://www.nationalparks.nsw.gov.au/safety",
+    "source": "National Parks NSW",
+    "location": "",
+    "date_start": null,
+    "date_end": null,
+    "price_text": "Free",
+    "is_free": true,
+    "categories": [
+      "outdoor"
+    ],
+    "image_url": null,
+    "ai_category": "outdoor",
+    "ai_priority": 1,
+    "ai_location_region": "sydney"
+  },
+  {
+    "title": "Lighthouse tours",
+    "description": "Access a piece of maritime heritage on a lighthouse tour in NSW national parks.",
+    "url": "https://www.nationalparks.nsw.gov.au/things-to-do/lighthouse-tours-nsw-national-parks",
+    "source": "National Parks NSW",
+    "location": "",
+    "date_start": null,
+    "date_end": null,
+    "price_text": "Free",
+    "is_free": true,
+    "categories": [
+      "outdoor"
+    ],
+    "image_url": null,
+    "ai_category": "outdoor",
+    "ai_priority": 1,
+    "ai_location_region": "sydney"
+  }
+]
