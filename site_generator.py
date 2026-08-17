@@ -1,5 +1,6 @@
 """
 Site generator — produces index.html in neo-brutalism style.
+Colour scheme: bubblegum pink + yellow (Gumroad-inspired).
 Each event card has a one-click "Add to Google Calendar" button.
 Hosted for free via GitHub Pages.
 """
@@ -12,6 +13,11 @@ from urllib.parse import quote
 from scrapers.base import Event
 
 OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "index.html")
+
+# Pink = #FF90E8  |  Yellow = #FFE500  |  Black = #0a0a0a
+PINK   = "#FF90E8"
+YELLOW = "#FFE500"
+BLACK  = "#0a0a0a"
 
 CATEGORY_META = {
     "festival":  {"label": "Festival",  "css": "hdr-festival"},
@@ -95,7 +101,6 @@ def _card_html(event: Event) -> str:
     title = html_lib.escape(event.title)
     location = html_lib.escape(event.location or "Sydney area")
     gcal = html_lib.escape(_gcal_url(event))
-    source_url = html_lib.escape(event.url)
 
     return f"""    <div class="card" data-cat="{cat}" data-region="{event.ai_location_region or 'sydney'}" data-free="{'true' if event.is_free else 'false'}">
       <div class="card-hdr {meta['css']}">
@@ -134,23 +139,23 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
 
     body {{
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #FFDE59;
-      color: #0a0a0a;
+      background: {PINK};
+      color: {BLACK};
       min-height: 100vh;
     }}
 
     /* ── HERO ── */
     .hero {{
-      background: #0a0a0a;
+      background: {BLACK};
       padding: 2rem 1.5rem 1.5rem;
-      border-bottom: 3px solid #0a0a0a;
+      border-bottom: 3px solid {BLACK};
     }}
     .hero-eyebrow {{
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #FFDE59;
+      color: {PINK};
       margin-bottom: 10px;
     }}
     .hero-title {{
@@ -159,19 +164,19 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       color: #fff;
       line-height: 1.1;
     }}
-    .hero-title span {{ color: #FFDE59; }}
+    .hero-title span {{ color: {YELLOW}; }}
     .hero-sub {{
       font-size: 13px;
-      color: rgba(255,255,255,0.45);
+      color: rgba(255,255,255,0.5);
       margin-top: 10px;
       letter-spacing: 0.03em;
     }}
-    #live-count {{ color: #FFDE59; font-weight: 600; }}
+    #live-count {{ color: {YELLOW}; font-weight: 700; }}
 
     /* ── FILTERS ── */
     .filters {{
       background: #fff;
-      border-bottom: 3px solid #0a0a0a;
+      border-bottom: 3px solid {BLACK};
       padding: 1rem 1.5rem;
       display: flex;
       flex-direction: column;
@@ -197,24 +202,24 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
     .pill {{
       font-size: 12px;
       font-weight: 600;
-      padding: 5px 13px;
-      border: 2px solid #0a0a0a;
+      padding: 5px 14px;
+      border: 2px solid {BLACK};
       background: #fff;
-      color: #0a0a0a;
+      color: {BLACK};
       cursor: pointer;
-      border-radius: 0;
-      box-shadow: 2px 2px 0 #0a0a0a;
+      border-radius: 999px;
+      box-shadow: 2px 2px 0 {BLACK};
       transition: transform 0.08s, box-shadow 0.08s;
       user-select: none;
     }}
-    .pill:hover {{ transform: translate(1px, 1px); box-shadow: 1px 1px 0 #0a0a0a; }}
-    .pill.active {{ background: #0a0a0a; color: #FFDE59; }}
-    .pill[data-value="free"].active   {{ background: #00C896; color: #fff; border-color: #00C896; box-shadow: 2px 2px 0 #0a0a0a; }}
-    .pill[data-value="festival"].active {{ background: #FF4D6D; color: #fff; border-color: #FF4D6D; box-shadow: 2px 2px 0 #0a0a0a; }}
-    .pill[data-value="market"].active   {{ background: #FF9F1C; color: #0a0a0a; border-color: #FF9F1C; box-shadow: 2px 2px 0 #0a0a0a; }}
-    .pill[data-value="art"].active      {{ background: #7B2FBE; color: #fff; border-color: #7B2FBE; box-shadow: 2px 2px 0 #0a0a0a; }}
-    .pill[data-value="outdoor"].active  {{ background: #2DC653; color: #fff; border-color: #2DC653; box-shadow: 2px 2px 0 #0a0a0a; }}
-    .pill[data-value="community"].active {{ background: #00C896; color: #fff; border-color: #00C896; box-shadow: 2px 2px 0 #0a0a0a; }}
+    .pill:hover {{ transform: translate(1px, 1px); box-shadow: 1px 1px 0 {BLACK}; }}
+    .pill.active {{ background: {BLACK}; color: {YELLOW}; }}
+    .pill[data-value="free"].active      {{ background: {YELLOW}; color: {BLACK}; border-color: {BLACK}; }}
+    .pill[data-value="festival"].active  {{ background: #FF4D6D; color: #fff; border-color: #FF4D6D; box-shadow: 2px 2px 0 {BLACK}; }}
+    .pill[data-value="market"].active    {{ background: #FF9F1C; color: {BLACK}; border-color: #FF9F1C; box-shadow: 2px 2px 0 {BLACK}; }}
+    .pill[data-value="art"].active       {{ background: #7B2FBE; color: #fff; border-color: #7B2FBE; box-shadow: 2px 2px 0 {BLACK}; }}
+    .pill[data-value="outdoor"].active   {{ background: #2DC653; color: #fff; border-color: #2DC653; box-shadow: 2px 2px 0 {BLACK}; }}
+    .pill[data-value="community"].active {{ background: {PINK}; color: {BLACK}; border-color: {BLACK}; box-shadow: 2px 2px 0 {BLACK}; }}
 
     /* ── CARDS ── */
     .cards {{
@@ -222,21 +227,23 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 18px;
-      background: #FFDE59;
+      background: {PINK};
     }}
     .card {{
       background: #fff;
-      border: 3px solid #0a0a0a;
-      box-shadow: 5px 5px 0 #0a0a0a;
+      border: 3px solid {BLACK};
+      border-radius: 16px;
+      box-shadow: 5px 5px 0 {BLACK};
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }}
     .card[hidden] {{ display: none !important; }}
 
     /* card header colours */
     .card-hdr {{
       padding: 0.6rem 1rem;
-      border-bottom: 3px solid #0a0a0a;
+      border-bottom: 3px solid {BLACK};
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -247,15 +254,15 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
     .hdr-art       {{ background: #7B2FBE; }}
     .hdr-outdoor   {{ background: #2DC653; }}
     .hdr-food      {{ background: #FF6B35; }}
-    .hdr-community {{ background: #00C896; }}
-    .hdr-other     {{ background: #888; }}
+    .hdr-community {{ background: {PINK}; }}
+    .hdr-other     {{ background: #aaa; }}
 
     .card-cat-label {{
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #0a0a0a;
+      color: {BLACK};
     }}
     .hdr-art .card-cat-label,
     .hdr-other .card-cat-label {{ color: #fff; }}
@@ -263,11 +270,12 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
     .badge {{
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 9px;
-      border: 2px solid #0a0a0a;
+      padding: 3px 10px;
+      border: 2px solid {BLACK};
+      border-radius: 999px;
     }}
-    .badge-free {{ background: #FFDE59; color: #0a0a0a; }}
-    .badge-paid {{ background: #fff;    color: #0a0a0a; }}
+    .badge-free {{ background: {YELLOW}; color: {BLACK}; }}
+    .badge-paid {{ background: #fff;     color: {BLACK}; }}
 
     .card-body {{
       padding: 1rem;
@@ -280,7 +288,7 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       font-size: 15px;
       font-weight: 700;
       line-height: 1.4;
-      color: #0a0a0a;
+      color: {BLACK};
     }}
     .card-meta {{
       display: flex;
@@ -295,7 +303,7 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       font-size: 13px;
       color: #444;
       line-height: 1.65;
-      border-left: 3px solid #0a0a0a;
+      border-left: 3px solid {PINK};
       padding-left: 10px;
       flex: 1;
     }}
@@ -307,8 +315,8 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       flex-wrap: wrap;
       gap: 8px;
       padding: 0.75rem 1rem;
-      border-top: 3px solid #0a0a0a;
-      background: #FFFDE0;
+      border-top: 3px solid {BLACK};
+      background: {YELLOW};
     }}
     .tags {{ display: flex; gap: 5px; flex-wrap: wrap; }}
     .tag {{
@@ -316,10 +324,11 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 3px 8px;
-      border: 2px solid #0a0a0a;
+      padding: 3px 10px;
+      border: 2px solid {BLACK};
+      border-radius: 999px;
       background: #fff;
-      color: #0a0a0a;
+      color: {BLACK};
     }}
 
     .add-btn {{
@@ -327,12 +336,13 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 7px 14px;
-      border: 2px solid #0a0a0a;
-      background: #FFDE59;
-      color: #0a0a0a;
+      padding: 7px 16px;
+      border: 2px solid {BLACK};
+      border-radius: 999px;
+      background: {PINK};
+      color: {BLACK};
       cursor: pointer;
-      box-shadow: 3px 3px 0 #0a0a0a;
+      box-shadow: 3px 3px 0 {BLACK};
       text-decoration: none;
       display: inline-flex;
       align-items: center;
@@ -340,7 +350,7 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       transition: transform 0.08s, box-shadow 0.08s;
       white-space: nowrap;
     }}
-    .add-btn:hover {{ transform: translate(2px, 2px); box-shadow: 1px 1px 0 #0a0a0a; }}
+    .add-btn:hover {{ transform: translate(2px, 2px); box-shadow: 1px 1px 0 {BLACK}; }}
 
     /* ── EMPTY STATE ── */
     .empty {{
@@ -348,10 +358,12 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       grid-column: 1 / -1;
       text-align: center;
       padding: 3rem 1rem;
-      border: 3px dashed #0a0a0a;
+      border: 3px dashed {BLACK};
+      border-radius: 16px;
       font-size: 15px;
       font-weight: 600;
-      color: #555;
+      color: {BLACK};
+      background: #fff;
     }}
 
     /* ── FOOTER ── */
@@ -359,12 +371,11 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
       text-align: center;
       padding: 1.5rem;
       font-size: 12px;
-      color: #555;
-      border-top: 3px solid #0a0a0a;
-      background: #0a0a0a;
+      border-top: 3px solid {BLACK};
+      background: {BLACK};
       color: rgba(255,255,255,0.4);
     }}
-    .footer a {{ color: #FFDE59; text-decoration: none; }}
+    .footer a {{ color: {YELLOW}; text-decoration: none; }}
 
     @media (max-width: 500px) {{
       .hero-title {{ font-size: 28px; }}
@@ -404,7 +415,7 @@ def _build_page(cards_html: str, count: int, updated: str) -> str:
 
 <main class="cards" id="cards">
 {cards_html}
-  <p class="empty" id="empty-msg">No events match these filters — try broadening your search.</p>
+  <p class="empty" id="empty-msg">No events match these filters — try broadening your search. 🌸</p>
 </main>
 
 <footer class="footer">
