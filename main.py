@@ -14,6 +14,7 @@ import sys
 from scrapers import scrape_timeout, scrape_urbanlist, scrape_nationalparks
 from filter import filter_events
 from database import EventDatabase
+from events_store import append_new
 from site_generator import generate_site
 
 logging.basicConfig(
@@ -52,12 +53,13 @@ async def run_weekly():
             is_free=event.is_free,
         )
 
-    generate_site(approved)
+    all_events = append_new(approved)
+    generate_site(all_events)
 
     stats = db.stats()
     logger.info(
         f"=== Weekly run complete. New: {len(approved)}, "
-        f"Total in DB: {stats['total']} ({stats['free']} free) ==="
+        f"Total on site: {len(all_events)} ({stats['free']} free) ==="
     )
 
 
@@ -84,10 +86,11 @@ async def run_monthly():
             is_free=event.is_free,
         )
 
-    generate_site(approved)
+    all_events = append_new(approved)
+    generate_site(all_events)
 
     stats = db.stats()
-    logger.info(f"=== Monthly run complete. New: {len(approved)}, Total: {stats['total']} ===")
+    logger.info(f"=== Monthly run complete. New: {len(approved)}, Total on site: {len(all_events)} ===")
 
 
 async def run_all():
