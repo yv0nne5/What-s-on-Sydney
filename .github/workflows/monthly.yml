@@ -24,8 +24,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          # Fix for Ubuntu 24: libasound2 was renamed to libasound2t64
+          sudo apt-get install -y libasound2t64 2>/dev/null || sudo apt-get install -y libasound2 || true
           playwright install chromium
-          playwright install-deps chromium
 
       - name: Run monthly scrape
         env:
@@ -36,6 +37,6 @@ jobs:
         run: |
           git config user.name  "Whats-on-Sydney Bot"
           git config user.email "bot@users.noreply.github.com"
-          git add index.html events.db
+          git add index.html events.db events_data.json
           git diff --staged --quiet || git commit -m "chore: monthly update [skip ci]"
           git push
