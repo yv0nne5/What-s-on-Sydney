@@ -2,6 +2,8 @@
 AI-powered event filter using Google Gemini (free tier).
 Reads raw scraped events and decides what to include in the calendar,
 assigning category, priority, and region.
+
+Uses the new google-genai SDK (replaces google-generativeai).
 """
 import asyncio
 import json
@@ -9,19 +11,29 @@ import logging
 import os
 from typing import List
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 from scrapers.base import Event
 
 logger = logging.getLogger(__name__)
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    generation_config={"temperature": 0.1, "response_mime_type": "application/json"},
+# Try both common env var names for the API key
+_api_key = (
+    os.environ.get("GEMINI_API_KEY")
+    or os.environ.get("GOOGLE_API_KEY")
+    or ""
 )
 
-SYSTEM_PROMPT = """You are a Sydney activities curator for a calendar called "What's on Sydney".
+if not _api_key:
+    logger.warning(
+        "[Filter] No Gemini API key found. Set the GEMINI_API_KEY secret in GitHub. "
+        "Events will be included unfiltered as a fallback."
+    )
+
+_client = genai.Client(api_key=_api_key) if _api_key else None
+
+SYSTEM_PROMPT = """You are a Sydney activities curator for a website called "What's on Sydney".
 
 Your job: decide which scraped events/activities to include, and classify them.
 
@@ -43,7 +55,7 @@ EXCLUDE:
 - Events outside geographic scope (interstate, overseas)
 - Sports matches/fixtures (unless it's a festival atmosphere)
 - Corporate or private events
-- Articles/listicles (not actual events)
+- Generic website navigation links or category pages (not actual events)
 - Duplicate or near-identical entries
 
 Return a JSON array with exactly one object per event (in the same order):
@@ -66,6 +78,7 @@ async def filter_events(events: List[Event], batch_size: int = 15) -> List[Event
     Filter and classify events using Gemini.
     Returns approved events sorted by priority (1 = best).
     National Parks events skip AI filter (already pre-classified).
+    If no API key is set, all events are included with default category.
     """
     if not events:
         return []
@@ -77,10 +90,19 @@ async def filter_events(events: List[Event], batch_size: int = 15) -> List[Event
     for e in events:
         if e.source == "National Parks NSW" and e.ai_category == "outdoor":
             e.ai_priority = 1
-            e.ai_location_region = "sydney"  # will be refined by region in URL
+            e.ai_location_region = "sydney"
             pre_approved.append(e)
         else:
             needs_review.append(e)
+
+    # Fallback: if no API key, include all events with default classification
+    if not _client:
+        logger.warning("[Filter] No Gemini client — including all events unfiltered.")
+        for e in needs_review:
+            e.ai_category = "other"
+            e.ai_priority = 2
+            e.ai_location_region = "sydney"
+        return pre_approved + needs_review
 
     approved_from_ai: List[Event] = []
 
@@ -112,12 +134,10 @@ async def filter_events(events: List[Event], batch_size: int = 15) -> List[Event
             approved_from_ai.append(event)
             logger.debug(f"[Filter] Included (p{event.ai_priority}): {event.title}")
 
-        # Polite delay between API calls
         if i + batch_size < len(needs_review):
             await asyncio.sleep(0.5)
 
     all_approved = pre_approved + approved_from_ai
-    # Sort: priority ascending (1 = best first), then free events first within same priority
     all_approved.sort(key=lambda e: (e.ai_priority, 0 if e.is_free else 1))
 
     logger.info(f"[Filter] {len(all_approved)} events approved out of {len(events)} scraped")
@@ -146,7 +166,14 @@ async def _filter_batch(events: List[Event]) -> List[dict]:
     )
 
     try:
-        response = model.generate_content(prompt)
+        response = _client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.1,
+                response_mime_type="application/json",
+            ),
+        )
         text = response.text.strip()
 
         # Strip accidental markdown fences
@@ -159,7 +186,6 @@ async def _filter_batch(events: List[Event]) -> List[dict]:
         results = json.loads(text)
         if not isinstance(results, list):
             raise ValueError("Expected a JSON array")
-        # Pad with exclude stubs if response is shorter than batch
         while len(results) < len(events):
             results.append({"include": False, "reason": "missing from response"})
         return results[:len(events)]
